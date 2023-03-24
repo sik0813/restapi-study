@@ -1,15 +1,17 @@
 package com.example.demo.events;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class EventTest {
+public class EventTest {
+
     @Test
     public void builder() {
         Event event = Event.builder()
-                .name("test name")
-                .description("test description").build();
+                .name("Inflearn Spring REST API")
+                .description("REST API development with Spring")
+                .build();
         assertThat(event).isNotNull();
     }
 
@@ -24,7 +26,7 @@ class EventTest {
         event.setName(name);
         event.setDescription(description);
 
-        //Then
+        // Then
         assertThat(event.getName()).isEqualTo(name);
         assertThat(event.getDescription()).isEqualTo(description);
     }
