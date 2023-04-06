@@ -58,9 +58,9 @@ public class EventControllerTests {
                 .build();
 
         mockMvc.perform(post("/api/events/")
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .accept(MediaTypes.HAL_JSON)
-                    .content(objectMapper.writeValueAsString(event)))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(objectMapper.writeValueAsString(event)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
@@ -74,12 +74,10 @@ public class EventControllerTests {
                                 linkWithRel("self").description("link to self"),
                                 linkWithRel("query-events").description("link to query events"),
                                 linkWithRel("update-event").description("link to update an existing event"),
-                                linkWithRel("profile").description("link to update an existing event")
-                        ),
+                                linkWithRel("profile").description("link to update an existing event")),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
-                        ),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")),
                         requestFields(
                                 fieldWithPath("name").description("Name of new event"),
                                 fieldWithPath("description").description("description of new event"),
@@ -90,12 +88,10 @@ public class EventControllerTests {
                                 fieldWithPath("location").description("location of new event"),
                                 fieldWithPath("basePrice").description("base price of new event"),
                                 fieldWithPath("maxPrice").description("max price of new event"),
-                                fieldWithPath("limitOfEnrollment").description("limit of enrolmment")
-                        ),
+                                fieldWithPath("limitOfEnrollment").description("limit of enrolmment")),
                         responseHeaders(
                                 headerWithName(HttpHeaders.LOCATION).description("Location header"),
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
-                        ),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")),
                         responseFields(
                                 fieldWithPath("id").description("identifier of new event"),
                                 fieldWithPath("name").description("Name of new event"),
@@ -114,10 +110,7 @@ public class EventControllerTests {
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.query-events.href").description("link to query event list"),
                                 fieldWithPath("_links.update-event.href").description("link to update existing event"),
-                                fieldWithPath("_links.profile.href").description("link to profile")
-                        )
-                ))
-        ;
+                                fieldWithPath("_links.profile.href").description("link to profile"))));
     }
 
     @Test
@@ -145,8 +138,7 @@ public class EventControllerTests {
                 .accept(MediaTypes.HAL_JSON)
                 .content(objectMapper.writeValueAsString(event)))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
-        ;
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -155,8 +147,8 @@ public class EventControllerTests {
         EventDto eventDto = EventDto.builder().build();
 
         this.mockMvc.perform(post("/api/events")
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .content(this.objectMapper.writeValueAsString(eventDto)))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(this.objectMapper.writeValueAsString(eventDto)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -181,11 +173,10 @@ public class EventControllerTests {
                 .content(this.objectMapper.writeValueAsString(eventDto)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$[0].objectName").exists())
-                .andExpect(jsonPath("$[0].defaultMessage").exists())
-                .andExpect(jsonPath("$[0].code").exists())
-        ;
+                .andExpect(jsonPath("content[0].objectName").exists())
+                .andExpect(jsonPath("content[0].defaultMessage").exists())
+                .andExpect(jsonPath("content[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists());
     }
-
 
 }
