@@ -1,6 +1,9 @@
 package com.example.demo.events;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
+import com.example.demo.accounts.Account;
+import com.example.demo.accounts.AccountSerializer;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -31,6 +34,9 @@ public class Event {
     private boolean free;
     @Enumerated(EnumType.STRING)
     private EventStatus eventStatus = EventStatus.DRAFT;
+    @ManyToOne
+    @JsonSerialize(using = AccountSerializer.class)
+    private Account manager;
 
     public void update() {
         if (this.basePrice == 0 && this.maxPrice == 0) {
