@@ -49,5 +49,11 @@ public class Event {
         } else {
             this.offline = true;
         }
+//        LocalDateTime now = LocalDateTime.now();
+//        if(now.isAfter(this.beginEnrollmentDateTime) && now.isBefore(this.closeEnrollmentDateTime)){
+//            this.eventStatus = EventStatus.PUBLISHED;
+//        } else if (now.isAfter(this.beginEventDateTime) && now.isBefore(this.endEventDateTime)){
+//            this.eventStatus = EventStatus.PUBLISHED;
+//        }
     }
 }

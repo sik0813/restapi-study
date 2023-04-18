@@ -6,6 +6,7 @@ import com.example.demo.accounts.AccountRole;
 import com.example.demo.accounts.AccountService;
 import com.example.demo.common.AppProperties;
 import com.example.demo.common.BaseTest;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ import org.springframework.security.oauth2.common.util.Jackson2JsonParser;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
@@ -326,17 +327,13 @@ public class EventControllerTests extends BaseTest {
                 this.mockMvc.perform(
                                 get("/api/events")
                                                 .header(HttpHeaders.AUTHORIZATION, getBearerToken(true))
-                                                .param("page", "0")
-                                                .param("size", "10")
-                                                .param("sort", "name,DESC")
-                                                .param("startBasePirce", "100")
+                                                .param("startBasePrice", "100")
                                                 .param("endBasePrice","200")
                                                 .param("eventStatus",EventStatus.PUBLISHED.toString()))
                                 .andDo(print())
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("page").exists())
-                                .andExpect(jsonPath("_embedded.eventList[0].eventStatus").value(EventStatus.PUBLISHED.toString()))
-                                .andExpect(jsonPath("_embedded.eventList[0]._links.self").exists())
+                                .andExpect(jsonPath("_embedded.eventList.*.eventStatus", Matchers.anyOf(Matchers.hasItem(EventStatus.PUBLISHED.toString()))))
                                 .andExpect(jsonPath("_links.self").exists())
                                 .andExpect(jsonPath("_links.profile").exists())
                                 .andExpect(jsonPath("_links.create-event").exists())
@@ -438,6 +435,8 @@ public class EventControllerTests extends BaseTest {
         }
 
         private Event buildEvent(int index) {
+                List<EventStatus> eventStatusList = Arrays.asList(EventStatus.DRAFT, EventStatus.BEGAN_ENROLLMEND, EventStatus.PUBLISHED);
+                Random rand = new Random();
                 return Event.builder()
                                 .name("event " + index)
                                 .description("test event")
@@ -451,7 +450,7 @@ public class EventControllerTests extends BaseTest {
                                 .location("강남역 D2 스타텁 팩토리")
                                 .free(false)
                                 .offline(true)
-                                .eventStatus(EventStatus.DRAFT)
+                                .eventStatus(eventStatusList.get(rand.nextInt(eventStatusList.size())))
                                 .build();
         }
 

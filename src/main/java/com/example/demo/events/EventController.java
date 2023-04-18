@@ -74,12 +74,12 @@ public class EventController {
     public ResponseEntity queryEvents(Pageable pageable,
             PagedResourcesAssembler<Event> assembler,
             @CurrentUser Account account,
-            @RequestParam(defaultValue = "-1") int startBasePrice,
-            @RequestParam(defaultValue = "-1") int endBasePrice,
-            @RequestParam EventStatus eventStatus) {
+            @RequestParam(defaultValue = "-1", required = false) int startBasePrice,
+            @RequestParam(defaultValue = "-1", required = false) int endBasePrice,
+            @RequestParam(required = false) EventStatus eventStatus) {
         Page<Event> page = this.eventRepository.findAll(pageable);
         if(startBasePrice != -1 && endBasePrice != -1 && eventStatus != null){
-            page = this.eventRepository.findByBasePriceBetweenAndEventStatusIs(100, 200, eventStatus, pageable);
+            page = this.eventRepository.findByEventStatusAndBasePriceBetween(eventStatus, startBasePrice, endBasePrice, pageable);
         }
         var pagedResources = assembler.toModel(page, e -> new EventResource(e));
         pagedResources.add(Link.of("/docs/index.html#resources-events-list").withRel("profile"));
