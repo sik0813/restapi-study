@@ -328,12 +328,17 @@ public class EventControllerTests extends BaseTest {
                                 get("/api/events")
                                                 .header(HttpHeaders.AUTHORIZATION, getBearerToken(true))
                                                 .param("startBasePrice", "100")
-                                                .param("endBasePrice","200")
-                                                .param("eventStatus",EventStatus.PUBLISHED.toString()))
+                                                .param("endBasePrice", "200")
+                                                .param("eventStatus", EventStatus.PUBLISHED.toString()))
                                 .andDo(print())
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("page").exists())
-                                .andExpect(jsonPath("_embedded.eventList.*.eventStatus", Matchers.anyOf(Matchers.hasItem(EventStatus.PUBLISHED.toString()))))
+                                .andExpect(jsonPath("_embedded.eventList.*.eventStatus",
+                                                Matchers.anyOf(Matchers.hasItem(EventStatus.PUBLISHED.toString()))))
+                                .andExpect(jsonPath("_embedded.eventList.*.basePrice", Matchers.anyOf(
+                                        Matchers.hasItem(
+                                                Matchers.allOf(Matchers.greaterThanOrEqualTo(100), Matchers.lessThanOrEqualTo(200))
+                                        ))))
                                 .andExpect(jsonPath("_links.self").exists())
                                 .andExpect(jsonPath("_links.profile").exists())
                                 .andExpect(jsonPath("_links.create-event").exists())
@@ -435,7 +440,8 @@ public class EventControllerTests extends BaseTest {
         }
 
         private Event buildEvent(int index) {
-                List<EventStatus> eventStatusList = Arrays.asList(EventStatus.DRAFT, EventStatus.BEGAN_ENROLLMEND, EventStatus.PUBLISHED);
+                List<EventStatus> eventStatusList = Arrays.asList(EventStatus.DRAFT, EventStatus.BEGAN_ENROLLMEND,
+                                EventStatus.PUBLISHED);
                 Random rand = new Random();
                 return Event.builder()
                                 .name("event " + index)
